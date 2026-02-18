@@ -11,7 +11,27 @@ function plugin_init_automator()
 {
     global $PLUGIN_HOOKS;
 
+    // Register autoloader for namespaced classes
+    spl_autoload_register(function ($class) {
+        $prefix = 'Glpi\\Plugin\\Automator\\';
+        $base_dir = __DIR__ . '/inc/';
+
+        $len = strlen($prefix);
+        if (strncmp($prefix, $class, $len) !== 0) {
+            return;
+        }
+
+        $relative_class = substr($class, $len);
+        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+        if (file_exists($file)) {
+            require_once $file;
+        }
+    });
+
     $PLUGIN_HOOKS['csrf_compliant']['automator'] = true;
+
+    \Plugin::registerClass('PluginAutomatorProfile', ['addtabon' => ['Profile']]);
 
     $allTypes = ['Computer', 'Monitor', 'Printer', 'Software', 'User', 'Group', 'Ticket', 'Contract'];
     $PLUGIN_HOOKS['item_add']['automator'] = [];
@@ -20,7 +40,7 @@ function plugin_init_automator()
     }
 
     // Add menu
-    if (Session::haveRight('config', UPDATE)) {
+    if (Session::haveRight('plugin_automator', READ)) {
         $PLUGIN_HOOKS['config_page']['automator'] = 'front/rule.php';
         $PLUGIN_HOOKS['menu_toadd']['automator'] = ['plugins' => 'PluginAutomatorRule'];
     }

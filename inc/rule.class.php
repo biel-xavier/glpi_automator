@@ -3,10 +3,6 @@
 use Glpi\Plugin\Automator\Action\ActionInterface;
 use Glpi\Plugin\Automator\Action\AutoIncrement;
 
-// Manual inclusion because namespaced classes in inc/Action may not be autoloaded in legacy contexts
-include_once __DIR__ . '/Action/ActionInterface.php';
-include_once __DIR__ . '/Action/AutoIncrement.php';
-
 class PluginAutomatorRule extends CommonDBTM
 {
     static $rightname = 'config';

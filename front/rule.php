@@ -2,7 +2,7 @@
 
 include('../../../inc/includes.php');
 
-Session::checkRight("config", UPDATE);
+Session::checkRight("plugin_automator", READ);
 
 Html::header('Automator', $_SERVER['PHP_SELF'], "plugins", "automator");
 

@@ -42,6 +42,11 @@ function plugin_automator_install()
         $migration->addPostQuery($query);
     }
 
+    // 3. Profile Rights
+    if (!$DB->fieldExists('glpi_profiles', 'plugin_automator')) {
+        $migration->addField('glpi_profiles', 'plugin_automator', 'char(10) DEFAULT NULL');
+    }
+
     $migration->executeMigration();
 
     // Deploy Frontend Assets

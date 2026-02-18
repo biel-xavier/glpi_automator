@@ -16,6 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $action = $_GET['action'] ?? '';
 
+// Check Rights
+if (in_array($action, ['save_rule', 'delete_rule'])) {
+    Session::checkRight("plugin_automator", UPDATE);
+} else {
+    Session::checkRight("plugin_automator", READ);
+}
+
 switch ($action) {
     case 'get_itemtypes':
         echo json_encode(['types' => ['Computer', 'Monitor', 'Printer', 'Software', 'User', 'Group', 'Ticket', 'Contract']]);
