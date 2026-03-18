@@ -87,4 +87,29 @@ class PluginAutomatorRule extends CommonDBTM
                 return null;
         }
     }
+
+
+    
+    public static function getMenuName()
+    {
+        return self::getTypeName();
+    }
+
+    public static function getMenuContent()
+    {
+        if (!Session::haveRight(static::$rightname, READ)) {
+            return false;
+        }
+
+        return [
+            'title'       => self::getMenuName(),
+            'page'        => \Plugin::getWebDir('automator') . '/front/rule.php',
+            'links'       => [
+                'search' => \Plugin::getWebDir('automator') . '/front/rule.php',
+                'config' => \Plugin::getWebDir('automator') . '/front/rule.php',
+            ],
+            'config_page' => \Plugin::getWebDir('automator') . '/front/rule.php',
+            'icon'        => 'ti ti-settings',
+        ];
+    }
 }
