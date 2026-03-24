@@ -46,6 +46,10 @@ function App() {
 
         await fetch(`../front/api.php?action=delete_rule`, {
           method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Glpi-Csrf-Token': window.glpi_csrf_token || ''
+          },
           body: body
         });
         fetchRules();

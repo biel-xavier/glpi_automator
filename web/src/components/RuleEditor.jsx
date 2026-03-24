@@ -7,14 +7,39 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
+const getInitialFormData = () => ({
+  id: null,
+  name: '',
+  itemtype: '',
+  is_active: 1,
+  actions: []
+});
+
+const parseConfiguration = (configuration) => {
+  if (typeof configuration !== 'string') {
+    return { ...(configuration || {}) };
+  }
+
+  try {
+    return JSON.parse(configuration || '{}');
+  } catch (error) {
+    return {};
+  }
+};
+
+const normalizeRule = (rule) => ({
+  ...getInitialFormData(),
+  ...rule,
+  actions: Array.isArray(rule?.actions)
+    ? rule.actions.map((action) => ({
+        ...action,
+        configuration: parseConfiguration(action.configuration)
+      }))
+    : []
+});
+
 export default function RuleEditor({ open, onClose, rule, onSave }) {
-  const [formData, setFormData] = useState({
-    id: null,
-    name: '',
-    itemtype: '',
-    is_active: 1,
-    actions: []
-  });
+  const [formData, setFormData] = useState(getInitialFormData);
   const [itemTypes, setItemTypes] = useState([]);
   const [fields, setFields] = useState([]);
 
@@ -23,21 +48,24 @@ export default function RuleEditor({ open, onClose, rule, onSave }) {
   }, []);
 
   useEffect(() => {
-    if (rule) {
-      setFormData(rule);
-      if (rule.itemtype) {
-        fetchFields(rule.itemtype);
-      }
-    } else {
-      setFormData({
-        id: null,
-        name: '',
-        itemtype: '',
-        is_active: 1,
-        actions: []
-      });
+    if (!open) {
+      return;
     }
-  }, [rule]);
+
+    if (rule) {
+      const normalizedRule = normalizeRule(rule);
+      setFormData(normalizedRule);
+      if (normalizedRule.itemtype) {
+        fetchFields(normalizedRule.itemtype);
+      } else {
+        setFields([]);
+      }
+      return;
+    }
+
+    setFormData(getInitialFormData());
+    setFields([]);
+  }, [open, rule]);
 
   const fetchItemTypes = async () => {
     try {
@@ -104,6 +132,10 @@ export default function RuleEditor({ open, onClose, rule, onSave }) {
 
       const response = await fetch('../front/api.php?action=save_rule', {
         method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-Glpi-Csrf-Token': window.glpi_csrf_token || ''
+        },
         body: body
       });
       const data = await response.json();

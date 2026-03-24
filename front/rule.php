@@ -10,7 +10,7 @@ echo '<div id="automator-root"></div>';
 echo '<script>window.glpi_csrf_token = "' . Session::getNewCSRFToken() . '";</script>';
 
 // Dynamic asset discovery
-$assets_dir = GLPI_ROOT . '/public/automator/assets';
+$assets_dir = GLPI_ROOT . '/marketplace/automator/public/automator/assets';
 $js_file = 'index.js'; // Fallback
 $css_file = 'index.css'; // Fallback
 
@@ -28,7 +28,7 @@ if (is_dir($assets_dir)) {
 
 global $CFG_GLPI;
 $root_doc = $CFG_GLPI['root_doc'];
-echo '<script type="module" src="' . $root_doc . '/automator/assets/' . $js_file . '"></script>';
-echo '<link rel="stylesheet" href="' . $root_doc . '/automator/assets/' . $css_file . '">';
+echo '<script type="module" src="' . $root_doc . '/marketplace/automator/public/automator/assets/' . $js_file . '"></script>';
+echo '<link rel="stylesheet" href="' . $root_doc . '/marketplace/automator/public/automator/assets/' . $css_file . '">';
 
 Html::footer();
