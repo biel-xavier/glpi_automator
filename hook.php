@@ -61,7 +61,7 @@ function plugin_automator_install()
 function plugin_automator_install_assets()
 {
     $source = __DIR__ . '/dist';
-    $dest = GLPI_ROOT . '/public/automator';
+    $dest = GLPI_ROOT . '/marketplace/automator/public/automator';
 
     if (!is_dir($source)) {
         \Toolbox::logInFile('php-errors', "Automator Plugin: dist directory not found. Run 'npm run build' first.");
